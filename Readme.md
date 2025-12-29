@@ -1,4 +1,4 @@
-he browser extension runs inside meeting tabs (Google Meet, Zoom Web, Teams Web, etc.) and safely observes live WebRTC video after the user has already granted camera/mic access to the site. It:
+The browser extension runs inside meeting tabs (Google Meet, Zoom Web, Teams Web, etc.) and safely observes live WebRTC video after the user has already granted camera/mic access to the site. It:
 
 Detects live video elements used in calls.
 
@@ -184,5 +184,6 @@ Collaboration:
 Review permission list and documentation to ensure compliance.
 
 Validate that UX clearly signals when detection is active.
+
 
 
