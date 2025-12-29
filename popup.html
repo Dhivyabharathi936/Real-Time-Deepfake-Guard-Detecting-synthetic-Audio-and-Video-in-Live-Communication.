@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Deepfake Guard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        width: 320px;
+        padding: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+      }
+
+      .container {
+        background: white;
+        border-radius: 0 0 12px 12px;
+        padding: 20px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        text-align: center;
+        color: white;
+      }
+
+      .header h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .shield-icon {
+        font-size: 24px;
+      }
+
+      .tagline {
+        font-size: 12px;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .switch-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .switch-container:hover {
+        background: #e9ecef;
+      }
+
+      .switch-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      /* Custom Toggle Switch */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .status-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-left: 4px solid #ccc;
+        transition: all 0.3s ease;
+      }
+
+      .status-card.enabled {
+        border-left-color: #28a745;
+        background: #d4edda;
+      }
+
+      .status-card.disabled {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+      }
+
+      .status-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-badge.enabled {
+        background: #28a745;
+        color: white;
+      }
+
+      .status-badge.disabled {
+        background: #dc3545;
+        color: white;
+      }
+
+      .status-badge.unknown {
+        background: #6c757d;
+        color: white;
+      }
+
+      .info-text {
+        font-size: 11px;
+        color: #6c757d;
+        text-align: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #dee2e6;
+      }
+
+      /* Pulse animation for enabled state */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+        }
+      }
+
+      input:checked + .slider {
+        animation: pulse 2s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h3><span class="shield-icon">🛡️</span> Deepfake Guard</h3>
+      <div class="tagline">Protecting you from AI-generated content</div>
+    </div>
+
+    <div class="container">
+      <div class="switch-container">
+        <label class="switch-label" for="toggle">Real-Time Detection</label>
+        <label class="switch">
+          <input id="toggle" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="status-card" id="statusCard">
+        <span class="status-text">Status:</span>
+        <span class="status-badge unknown" id="statusBadge">Unknown</span>
+      </div>
+
+      <div class="info-text">
+        Toggle to enable/disable real-time deepfake detection on web pages
+      </div>
+    </div>
+
+    <script>
+      const KEY = 'deepfake_guard_enabled';
+      const toggle = document.getElementById('toggle');
+      const statusBadge = document.getElementById('statusBadge');
+      const statusCard = document.getElementById('statusCard');
+
+      function updateStatus() {
+        chrome.storage.local.get([KEY], (res) => {
+          const enabled = res[KEY] === true;
+          toggle.checked = enabled;
+          
+         
+          statusBadge.textContent = enabled ? 'Enabled' : 'Disabled';
+          statusBadge.className = 'status-badge ' + (enabled ? 'enabled' : 'disabled');
+          
+          
+          statusCard.className = 'status-card ' + (enabled ? 'enabled' : 'disabled');
+        });
+      }
+
+      toggle.addEventListener('change', () => {
+        const val = toggle.checked === true;
+        chrome.storage.local.set({ [KEY]: val }, () => {
+          updateStatus();
+        });
+      });
+
+      updateStatus();
+    </script>
+  </body>
+</html>
