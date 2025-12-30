@@ -1,6 +1,6 @@
-The browser extension runs inside meeting tabs (Google Meet, Zoom Web, Teams Web, etc.) and safely observes live WebRTC video after the user has already granted camera/mic access to the site. It:
+__The browser extension runs inside meeting tabs (Google Meet, Zoom Web, Teams Web, etc.) and safely observes live WebRTC video after the user has already granted camera/mic access to the site. It:__
 
-Detects live video elements used in calls.
+<u>Detects live video elements used in calls.</u>
 
 Samples sparse frames (e.g., 1 FPS) from these videos using a hidden canvas.
 
@@ -12,10 +12,10 @@ Provides a clear ON/OFF toggle so users remain in control.
 
 In short, this module is the bridge between the browser’s live call UI and the backend deepfake model, with strong privacy guarantees.
 
-2. Owned Files and Responsibilities
+ __2. Owned Files and Responsibilities__
 These are the files owned by the Browser Extension & WebRTC module and how they relate to other teams:
 
-manifest.json
+__manifest.json__
 Defines the extension’s:
 
 Name, description, and version.
@@ -26,7 +26,7 @@ Background service worker (background.js).
 
 Content script injection (content_script.js).
 
-Popup UI (popup.html).
+__Popup UI (popup.html).__
 
 Team impact:
 
@@ -34,7 +34,7 @@ Backend team: Needs correct backend URLs and host permissions.
 
 Security/Privacy: Validates minimal permissions and scope.
 
-content_script.js
+__content_script.js__
 Injected into meeting pages.
 
 Responsibilities:
@@ -51,7 +51,7 @@ Receives deepfake scores and displays warning banners in-page.
 
 Reacts to the global enable/disable state stored in extension storage.
 
-background.js
+__background.js__
 Runs as the extension’s background service worker.
 
 Responsibilities:
@@ -76,11 +76,11 @@ Sends the score to the right tab so content_script.js can update banners.
 
 Team impact:
 
-Backend/API: Must agree on message schema (JSON fields, frame_id, image_base64, timestamp, score structure).
+__Backend/API: Must agree on message schema (JSON fields, frame_id, image_base64, timestamp, score structure).__
 
 DevOps: Might configure backend URL, TLS, and deployment environment.
 
-popup.html
+__popup.html__
 Provides the extension’s popup UI when clicked in the browser toolbar.
 
 Responsibilities:
@@ -91,7 +91,7 @@ Reads and updates the detection state in chrome.storage (or equivalent).
 
 Triggers content scripts to start/stop frame capture based on this state.
 
-ui.css
+__ui.css__
 Styles the in-page banners that show deepfake risk.
 
 Responsibilities:
@@ -119,11 +119,11 @@ Receives:
 
 A JSON response with at least a score (e.g., score or deepfake_probability) and the same frame_id.
 
-Protocol:
+__Protocols:__
 
-Primary: WebSocket (/ws) for streaming frames and scores.
+__Primary:__ WebSocket (/ws) for streaming frames and scores.
 
-Fallback: HTTP POST (/predict/frame) for request/response.
+__Fallback:__ HTTP POST (/predict/frame) for request/response.
 
 Contract:
 If backend changes the message schema, this module must be updated to match. Conversely, backend can trust this module for frame rate and format.
@@ -160,7 +160,7 @@ Wording: e.g.,
 
 Color and severity mapping.
 
-Future hooks:
+__Future hooks__:
 
 Could add a “Learn more” link or open a side panel where frontend team controls the content.
 
@@ -179,11 +179,12 @@ Frames derived from already-rendered video elements (after user consent).
 
 In-memory processing and short-lived transmission to backend.
 
-Collaboration:
+__Collaboration:__
 
 Review permission list and documentation to ensure compliance.
 
 Validate that UX clearly signals when detection is active.
+
 
 
 
