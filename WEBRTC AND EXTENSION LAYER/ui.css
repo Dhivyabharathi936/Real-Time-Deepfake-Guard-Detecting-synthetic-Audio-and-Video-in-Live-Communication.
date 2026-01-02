@@ -1,5 +1,0 @@
-/* minimal UI styles for injected alerts (future) */
-.deepfake-guard-banner { position: fixed; top: 8px; right: 8px; z-index: 2147483647; padding: 8px 12px; border-radius: 6px; font-family: Arial, sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.2);} 
-.deepfake-guard-safe { background: #0f9d58; color: white; }
-.deepfake-guard-warning { background: #f4b400; color: black; }
-.deepfake-guard-danger { background: #db4437; color: white; }
